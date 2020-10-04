@@ -1,5 +1,3 @@
-package hash_table2;
-
 public class Flow {
     private final int id;
 

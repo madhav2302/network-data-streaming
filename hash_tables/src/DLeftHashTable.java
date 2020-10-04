@@ -1,5 +1,3 @@
-package hash_table2;
-
 import java.util.*;
 
 public class DLeftHashTable {

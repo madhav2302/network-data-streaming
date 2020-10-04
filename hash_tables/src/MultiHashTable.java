@@ -1,8 +1,6 @@
-package hash_table2;
-
 import java.util.*;
 
-public class CuckooHashTable {
+public class MultiHashTable {
 
     private static final Random RANDOM = new Random();
 
@@ -12,21 +10,18 @@ public class CuckooHashTable {
     private final Flow[] entries;
 
     private final int[] hashHelpers;
-    private final int cuckooSteps;
 
-    public CuckooHashTable(int tableSize, int numberOfHashFunctions, int cuckooSteps) {
+    public MultiHashTable(int tableSize, int numberOfHashFunctions) {
         this.entries = new Flow[tableSize];
         this.hashHelpers = createHashHelpers(numberOfHashFunctions);
-        this.cuckooSteps = cuckooSteps;
     }
 
     public static void main(String[] args) {
         int tableSize = 1000;
         int numberOfFlows = 1000;
         int numberOfHashFunctions = 3;
-        int numberOfCuckooSteps = 2;
 
-        CuckooHashTable table = new CuckooHashTable(tableSize, numberOfHashFunctions, numberOfCuckooSteps);
+        MultiHashTable table = new MultiHashTable(tableSize, numberOfHashFunctions);
 
         table.run(numberOfFlows);
         table.print();
@@ -93,45 +88,10 @@ public class CuckooHashTable {
      * Inserts flow id into hash table if possible, otherwise ignore the flow.
      */
     public boolean insert(Flow flow) {
-        for (int hashIndex = 0; hashIndex < hashHelpers.length; hashIndex++) {
-            int entryIndex = hashValue(hashIndex, flow);
-            if (entries[entryIndex] == null) {
-                entries[entryIndex] = flow;
-                return true;
-            }
-        }
-
         for (int count = 0; count < hashHelpers.length; count++) {
             int index = hashValue(count, flow);
-            if (move(index, cuckooSteps)) {
+            if (entries[index] == null) {
                 entries[index] = flow;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Move flow to other index if possible.
-     */
-    private boolean move(int index, int cuckooSteps) {
-        if (cuckooSteps == 0) return false;
-
-        Flow existingFlow = entries[index];
-
-        for (int count = 0; count < hashHelpers.length; count++) {
-            int newIndex = hashValue(count, existingFlow);
-            if (newIndex != index && entries[newIndex] == null) {
-                entries[newIndex] = existingFlow;
-                return true;
-            }
-        }
-
-        for (int count = 0; count < hashHelpers.length; count++) {
-            int newIndex = hashValue(count, existingFlow);
-            if (newIndex != index && move(newIndex, cuckooSteps - 1)) {
-                entries[newIndex] = existingFlow;
                 return true;
             }
         }

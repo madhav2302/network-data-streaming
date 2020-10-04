@@ -1,5 +1,3 @@
-package hash_table2;
-
 import java.util.Set;
 
 public class Main {
