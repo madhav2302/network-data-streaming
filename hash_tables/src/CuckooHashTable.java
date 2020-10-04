@@ -40,6 +40,7 @@ public class CuckooHashTable {
     protected Set<Flow> randomFlows(int numberOfFlows) {
         Set<Flow> flows = new HashSet<>();
         Set<Integer> usedFlowIds = new HashSet<>();
+        usedFlowIds.add(0); // We don't want to use 0 as flow id, as we print it for empty entry
         for (int count = 0; count < numberOfFlows; count++) {
             int randomFlowId = nextRandomInt(usedFlowIds);
             flows.add(new Flow(randomFlowId));

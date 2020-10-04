@@ -14,3 +14,10 @@ Output File : [CuckooHashTable.txt](resources/outputs/CuckooHashTable.txt)
 Java File : [DLeftHashTable.java](src/DLeftHashTable.java)
 
 Output File : [DLeftHashTable.txt](resources/outputs/DLeftHashTable.txt)
+
+---
+
+### Output Format
+
+- First line denotes number of flows present in hash table
+- Later lines denotes flow id present in hash table (index as _line_number - 1_). If it is present otherwise zero (0).
