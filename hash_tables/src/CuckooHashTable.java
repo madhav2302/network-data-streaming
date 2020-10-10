@@ -7,13 +7,13 @@ public class CuckooHashTable {
     /**
      * Hash Table as array
      */
-    private final Flow[] entries;
+    private final Flow[] table;
 
     private final int[] hashHelpers;
     private final int cuckooSteps;
 
     public CuckooHashTable(int tableSize, int numberOfHashFunctions, int cuckooSteps) {
-        this.entries = new Flow[tableSize];
+        this.table = new Flow[tableSize];
         this.hashHelpers = createHashHelpers(numberOfHashFunctions);
         this.cuckooSteps = cuckooSteps;
     }
@@ -35,7 +35,7 @@ public class CuckooHashTable {
     }
 
     /**
-     * Generates numberOfFlows distinct random flows b/w 0 and {@link #entries} length * 10
+     * Generates numberOfFlows distinct random flows b/w 0 and {@link #table} length * 10
      */
     protected Set<Flow> randomFlows(int numberOfFlows) {
         Set<Flow> flows = new HashSet<>();
@@ -54,16 +54,16 @@ public class CuckooHashTable {
      * Prints flow id present at index number, otherwise zero (0).
      */
     public void print() {
-        long numberOfFlowsInHashTable = Arrays.stream(entries).filter(Objects::nonNull).count();
+        long numberOfFlowsInHashTable = Arrays.stream(table).filter(Objects::nonNull).count();
         System.out.println(numberOfFlowsInHashTable);
 
-        for (Flow entry : entries) {
+        for (Flow entry : table) {
             System.out.println(entry != null ? entry.getId() : 0);
         }
     }
 
     /**
-     * Creates some random values b/w 0 and {@link #entries} length * 10 to be used for XOR with hash for hash functions
+     * Creates some random values b/w 0 and {@link #table} length * 10 to be used for XOR with hash for hash functions
      */
     private int[] createHashHelpers(int numberOfHashFunctions) {
         int[] hashValues = new int[numberOfHashFunctions];
@@ -78,10 +78,10 @@ public class CuckooHashTable {
     }
 
     /**
-     * Returns a random value b/w 0 and {@link #entries} length * 10 other than already present in used.
+     * Returns a random value b/w 0 and {@link #table} length * 10 other than already present in used.
      */
     protected int nextRandomInt(Set<Integer> used) {
-        int random = Math.abs(RANDOM.nextInt(entries.length * 10));
+        int random = Math.abs(RANDOM.nextInt(table.length * 10));
 
         if (used.contains(random)) return nextRandomInt(used);
 
@@ -94,8 +94,8 @@ public class CuckooHashTable {
     public boolean insert(Flow flow) {
         for (int hashIndex = 0; hashIndex < hashHelpers.length; hashIndex++) {
             int entryIndex = hashValue(hashIndex, flow);
-            if (entries[entryIndex] == null) {
-                entries[entryIndex] = flow;
+            if (table[entryIndex] == null) {
+                table[entryIndex] = flow;
                 return true;
             }
         }
@@ -103,7 +103,7 @@ public class CuckooHashTable {
         for (int count = 0; count < hashHelpers.length; count++) {
             int index = hashValue(count, flow);
             if (move(index, cuckooSteps)) {
-                entries[index] = flow;
+                table[index] = flow;
                 return true;
             }
         }
@@ -117,12 +117,12 @@ public class CuckooHashTable {
     private boolean move(int index, int cuckooSteps) {
         if (cuckooSteps == 0) return false;
 
-        Flow existingFlow = entries[index];
+        Flow existingFlow = table[index];
 
         for (int count = 0; count < hashHelpers.length; count++) {
             int newIndex = hashValue(count, existingFlow);
-            if (newIndex != index && entries[newIndex] == null) {
-                entries[newIndex] = existingFlow;
+            if (newIndex != index && table[newIndex] == null) {
+                table[newIndex] = existingFlow;
                 return true;
             }
         }
@@ -130,7 +130,7 @@ public class CuckooHashTable {
         for (int count = 0; count < hashHelpers.length; count++) {
             int newIndex = hashValue(count, existingFlow);
             if (newIndex != index && move(newIndex, cuckooSteps - 1)) {
-                entries[newIndex] = existingFlow;
+                table[newIndex] = existingFlow;
                 return true;
             }
         }
@@ -142,6 +142,6 @@ public class CuckooHashTable {
      * Index for flow for hash table.
      */
     public int hashValue(int index, Flow flow) {
-        return Math.abs(flow.getId().hashCode() ^ hashHelpers[index]) % entries.length;
+        return Math.abs(flow.getId().hashCode() ^ hashHelpers[index]) % table.length;
     }
 }
