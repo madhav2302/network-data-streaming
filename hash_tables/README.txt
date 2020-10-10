@@ -20,7 +20,7 @@ Output File : [MultiHashTable.txt](outputs/MultiHashTable.txt)
 Java File : [CuckooHashTable.java](src/CuckooHashTable.java)
 
 ### Methods
-1. move(index, cuckooSteps) - Try to move value current flow present at index with cuckooSteps nesting, 
+1. move(index, cuckooSteps) - Try to move value current flow present at index with cuckooSteps nesting,
                               returns true if successful, otherwise false
 
 Output File : [CuckooHashTable.txt](outputs/CuckooHashTable.txt)
@@ -31,7 +31,7 @@ Java File : [DLeftHashTable.java](src/DLeftHashTable.java)
 Output File : [DLeftHashTable.txt](outputs/DLeftHashTable.txt)
 
 ---
-## Output : 
+## Output :
 Output files are in [outputs](outputs) folder.
 
 ### Output Format
