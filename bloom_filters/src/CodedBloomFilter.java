@@ -2,7 +2,6 @@ import java.util.*;
 
 public class CodedBloomFilter {
 
-    public int count = 0;
     public static final Random RANDOM = new Random();
     private final int[][] filters;
     private final int[] hashHelpers;
@@ -48,7 +47,12 @@ public class CodedBloomFilter {
         int result = 0;
         for (int setNumber = 1; setNumber <= numberOfSets; setNumber++) {
             for (int element : setOfElements.get(setNumber)) {
-                if (bloomFilter.lookUp(setNumber, element)) result++;
+                int[] setCode = bloomFilter.lookUp(element);
+                if (Arrays.equals(setCode, bloomFilter.setCodes[0])) {
+                    // We don't want to count it as mis-classification
+                } else if (Arrays.equals(setCode, bloomFilter.setCodes[setNumber])) {
+                    result++;
+                }
             }
         }
 
@@ -67,20 +71,26 @@ public class CodedBloomFilter {
         }
     }
 
-    public boolean lookUp(int setNumber, int element) {
+    /**
+     * @return if an array of 0 is returned, i.e. it is not present in bloom-filter,
+     * otherwise it is present (and it can be mis-classified)
+     */
+    public int[] lookUp(int element) {
         int[] lookUpSet = new int[filters.length];
 
         for (int filterIndex = 0; filterIndex < filters.length; filterIndex++) {
+            boolean presentInFilter = true;
             for (int hashIndex = 0; hashIndex < hashHelpers.length; hashIndex++) {
                 if (filters[filterIndex][hashValue(hashIndex, element)] == 0) {
+                    presentInFilter = false;
                     break;
                 }
             }
 
-            lookUpSet[filterIndex] = 1;
+            if (presentInFilter) lookUpSet[filterIndex] = 1;
         }
 
-        return Arrays.equals(lookUpSet, setCodes[setNumber]);
+        return lookUpSet;
     }
 
     /**
