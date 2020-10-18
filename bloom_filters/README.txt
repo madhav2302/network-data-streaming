@@ -9,7 +9,7 @@ Using random distinct values.
 3. createHashHelpers - Creates random integer values for helping in hash index calculation
 4. randomElements - Generates numberOfElemetns distinct random elements as integer value
 
---- 
+---
 
 ## Bloom Filter
 
