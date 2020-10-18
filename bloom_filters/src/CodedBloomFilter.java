@@ -1,9 +1,8 @@
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class CodedBloomFilter {
 
+    public int count = 0;
     public static final Random RANDOM = new Random();
     private final int[][] filters;
     private final int[] hashHelpers;
@@ -32,20 +31,23 @@ public class CodedBloomFilter {
 
         CodedBloomFilter bloomFilter = new CodedBloomFilter(numberOfFilters, numberOfBitsPerFilter, numberOfHashes);
 
-        // Encode
+        Map<Integer, Set<Integer>> setOfElements = new HashMap<>();
+
         Set<Integer> used = new HashSet<>();
-        for (int setNumber = 1; setNumber < numberOfSets; setNumber++) {
-            Set<Integer> randomElements = bloomFilter.randomElements(numberOfElementPerSet, used);
-            for (int element : randomElements) {
+        for (int setNumber = 1; setNumber <= numberOfSets; setNumber++) {
+            setOfElements.put(setNumber, bloomFilter.randomElements(numberOfElementPerSet, used));
+        }
+        // Encode
+        for (int setNumber = 1; setNumber <= numberOfSets; setNumber++) {
+            for (int element : setOfElements.get(setNumber)) {
                 bloomFilter.encode(setNumber, element);
             }
         }
 
         // LookUp
         int result = 0;
-        for (int setNumber = 1; setNumber < numberOfSets; setNumber++) {
-            Set<Integer> randomElements = bloomFilter.randomElements(numberOfElementPerSet, used);
-            for (int element : randomElements) {
+        for (int setNumber = 1; setNumber <= numberOfSets; setNumber++) {
+            for (int element : setOfElements.get(setNumber)) {
                 if (bloomFilter.lookUp(setNumber, element)) result++;
             }
         }
@@ -66,24 +68,19 @@ public class CodedBloomFilter {
     }
 
     public boolean lookUp(int setNumber, int element) {
-        boolean result = false;
+        int[] lookUpSet = new int[filters.length];
 
         for (int filterIndex = 0; filterIndex < filters.length; filterIndex++) {
-            boolean presentInFilter = true;
             for (int hashIndex = 0; hashIndex < hashHelpers.length; hashIndex++) {
                 if (filters[filterIndex][hashValue(hashIndex, element)] == 0) {
-                    presentInFilter = false;
                     break;
                 }
             }
 
-            if (presentInFilter) {
-                setCodes[setNumber][filterIndex] = 1;
-                result = presentInFilter;
-            }
+            lookUpSet[filterIndex] = 1;
         }
 
-        return result;
+        return Arrays.equals(lookUpSet, setCodes[setNumber]);
     }
 
     /**
