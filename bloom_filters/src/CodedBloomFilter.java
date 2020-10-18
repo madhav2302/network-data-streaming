@@ -112,7 +112,7 @@ public class CodedBloomFilter {
      * Returns a random value b/w 0 and (numberOfFilters * numberOfElementsPerFilter * 10) other than already present in used.
      */
     protected int nextRandomInt(Set<Integer> used) {
-        int random = Math.abs(RANDOM.nextInt(filters.length * filters[0].length * 10));
+        int random = Math.abs(RANDOM.nextInt());
 
         if (used.contains(random)) return nextRandomInt(used);
 

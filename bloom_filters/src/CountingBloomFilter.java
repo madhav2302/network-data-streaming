@@ -77,10 +77,10 @@ public class CountingBloomFilter {
     }
 
     /**
-     * Returns a random value b/w 0 and {@link #counter} length * 10 other than already present in used.
+     * Returns a random value other than already present in used.
      */
     protected int nextRandomInt(Set<Integer> used) {
-        int random = Math.abs(RANDOM.nextInt(counter.length * 10));
+        int random = Math.abs(RANDOM.nextInt());
 
         if (used.contains(random)) return nextRandomInt(used);
 
