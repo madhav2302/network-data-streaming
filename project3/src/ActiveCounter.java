@@ -1,9 +1,11 @@
-public class ActiveCounter {
-    int n = 0;
-    int e = 0;
+import java.util.Random;
 
+public class ActiveCounter {
     // We use it to check 2^16 limit for counter
-    public static final int MAX = Integer.valueOf("1111111111111111", 2);
+    public static final int MAX = (int) Math.pow(2, 16);
+    public Random random = new Random();
+
+    int n = 0, e = 0;
 
     public static void main(String[] args) {
         ActiveCounter activeCounter = new ActiveCounter();
@@ -13,28 +15,18 @@ public class ActiveCounter {
     }
 
     public void run(int times) {
-        // We use it for probability, basically increase n, once in 2^e
-        int probability = (int) Math.pow(2, e);
-
         for (int i = 0; i < times; i++) {
-            probability--;
-
-            // If we have to 0, it means we have to increase n
-            if (probability == 0) {
+            // Check probability
+            if (random.nextInt((int) Math.pow(2, e)) == 0) {
+                random = new Random();
+                // Active increase
                 n++;
-            }
 
-            // Check overflow
-            if (n > MAX) {
-                n = n >> 1;
-                e++;
+                if (n == MAX) {
+                    n = n >> 1;
+                    e++;
+                }
             }
-
-            // Reset probability value with 2^e
-            if (probability == 0) {
-                probability = (int) Math.pow(2, e);
-            }
-
         }
     }
 
