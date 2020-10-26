@@ -43,6 +43,10 @@ public class CounterSketch {
         }
     }
 
+    /**
+     * Record size of flow in the counter depending on the most significant bit
+     * i.e. Positive if most significant bit is 1, otherwise negative
+     */
     public void record(Project3Util.Flow flow) {
         for (int index = 0; index < C.length; index++) {
             int hashValue = hashValue(index, flow);
@@ -53,6 +57,9 @@ public class CounterSketch {
         }
     }
 
+    /**
+     * Calculate median of the array
+     */
     public int median(int[] array) {
         Arrays.sort(array);
         if (array.length % 2 == 0)
@@ -61,6 +68,9 @@ public class CounterSketch {
             return array[array.length / 2];
     }
 
+    /**
+     * Fetch median size of all the counters for the flow
+     */
     public int query(Project3Util.Flow flow) {
         int[] array = new int[C.length];
 
@@ -75,10 +85,16 @@ public class CounterSketch {
         return median(array);
     }
 
+    /**
+     * Hash Value of the flow for respective hash function
+     */
     private int hashValue(int index, Project3Util.Flow flow) {
         return flow.flowId.hashCode() ^ hashHelpers[index];
     }
 
+    /**
+     * Hash index of the flow
+     */
     private int hashIndex(int index, Project3Util.Flow flow) {
         return Math.abs(hashValue(index, flow)) % C[0].length;
     }

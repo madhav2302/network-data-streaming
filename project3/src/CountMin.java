@@ -3,8 +3,6 @@ import java.util.*;
 
 public class CountMin {
 
-
-
     private final int[][] C;
     private final int[] hashHelpers;
 
@@ -44,27 +42,32 @@ public class CountMin {
         }
     }
 
-
-
+    /**
+     * Record size of flow in the counters
+     */
     public void record(Project3Util.Flow flow) {
         for (int index = 0; index < C.length; index++) {
-            C[index][hashValue(index, flow)] += flow.numberOfPackets;
+            C[index][hashIndex(index, flow)] += flow.numberOfPackets;
         }
     }
 
+    /**
+     * Fetch minimum size of all the counters for the flow
+     */
     public int query(Project3Util.Flow flow) {
         int min = Integer.MAX_VALUE;
 
         for (int index = 0; index < C.length; index++) {
-            min = Math.min(C[index][hashValue(index, flow)], min);
+            min = Math.min(C[index][hashIndex(index, flow)], min);
         }
 
         return min;
     }
 
-    private int hashValue(int index, Project3Util.Flow flow) {
+    /**
+     * Hash Index for the counter number index
+     */
+    private int hashIndex(int index, Project3Util.Flow flow) {
         return (Math.abs(flow.flowId.hashCode()) ^ hashHelpers[index]) % C[0].length;
     }
-
-
 }
