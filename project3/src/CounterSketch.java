@@ -10,10 +10,9 @@ public class CounterSketch {
     private final int[] hashHelpers;
 
     public CounterSketch(int k, int w) {
-        C = new int[k][w];
+        this.C = new int[k][w];
         this.hashHelpers = Project3Util.createHashHelpers(k);
     }
-
 
     public static void main(String[] args) throws FileNotFoundException {
         int k = 3;
@@ -34,9 +33,7 @@ public class CounterSketch {
 
         for (Project3Util.Flow f : flows) {
             queue.add(f);
-            if (queue.size() > 100) {
-                queue.poll();
-            }
+            if (queue.size() > 100) queue.poll();
         }
 
         while (!queue.isEmpty()) {
@@ -46,19 +43,13 @@ public class CounterSketch {
         }
     }
 
-
     public void record(Project3Util.Flow flow) {
         for (int index = 0; index < C.length; index++) {
-            int hashValue = Math.abs(hashValue(index, flow));
+            int hashValue = hashValue(index, flow);
 
-            String s = Integer.toBinaryString(hashValue);
-
-            //  TODO :
-            if (s.length() >= 16) {
-                C[index][hashIndex(index, flow)] += flow.numberOfPackets;
-            } else {
-                C[index][hashIndex(index, flow)] -= flow.numberOfPackets;
-            }
+            String binary = Integer.toBinaryString(hashValue);
+            if (binary.charAt(1) == '1') C[index][hashIndex(index, flow)] += flow.numberOfPackets;
+            else C[index][hashIndex(index, flow)] -= flow.numberOfPackets;
         }
     }
 
@@ -68,14 +59,17 @@ public class CounterSketch {
             return array[array.length / 2] / 2 + array[array.length / 2 - 1] / 2;
         else
             return array[array.length / 2];
-
     }
 
     public int query(Project3Util.Flow flow) {
         int[] array = new int[C.length];
 
         for (int index = 0; index < C.length; index++) {
-            array[index] = C[index][hashIndex(index, flow)];
+            int hashValue = hashValue(index, flow);
+
+            String binary = Integer.toBinaryString(hashValue);
+            if (binary.charAt(1) == '1') array[index] = C[index][hashIndex(index, flow)];
+            else array[index] = -C[index][hashIndex(index, flow)];
         }
 
         return median(array);
