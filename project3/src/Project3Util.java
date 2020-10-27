@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.HashSet;
@@ -30,7 +31,14 @@ public class Project3Util {
     }
 
     public static Set<Flow> readFlows() throws FileNotFoundException {
-        Scanner scanner = new Scanner(new FileInputStream("project3/resources/project3input.txt"));
+        String file = "project3/resources/project3input.txt";
+        if (!new File(file).exists()) {
+            file = "resources/project3input.txt";
+            if (!new File(file).exists())
+                throw new RuntimeException("File not present");
+        }
+
+        Scanner scanner = new Scanner(new FileInputStream(file));
         int n = Integer.parseInt(scanner.nextLine());
 
         Set<Flow> flows = new HashSet<>();
