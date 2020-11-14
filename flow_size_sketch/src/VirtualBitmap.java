@@ -14,14 +14,14 @@ public class VirtualBitmap {
 
     double countVb = -1;
 
-    public VirtualBitmap(int n, int m, int l) {
+    public VirtualBitmap(int m, int l) {
         this.B = new int[m];
         this.R = createHashHelpers(l);
     }
 
     public static void main(String[] args) throws IOException {
-        int n = 8_507, m = 500_000, l = 500;
-        VirtualBitmap bitmap = new VirtualBitmap(n, m, l);
+        int m = 500_000, l = 500;
+        VirtualBitmap bitmap = new VirtualBitmap(m, l);
         bitmap.run();
     }
 
@@ -77,8 +77,8 @@ public class VirtualBitmap {
 
         if (countVb == -1) {
             countVb = 0;
-            for (int index = 0; index < B.length; index++) {
-                if (B[index] == 0) {
+            for (int bit : B) {
+                if (bit == 0) {
                     countVb++;
                 }
             }
