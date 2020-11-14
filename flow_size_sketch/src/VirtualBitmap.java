@@ -12,7 +12,7 @@ public class VirtualBitmap {
     private final int[] R;
     private final int[] B;
 
-    double countVb = -1;
+    double V_b = -1;
 
     public VirtualBitmap(int m, int l) {
         this.B = new int[m];
@@ -75,16 +75,13 @@ public class VirtualBitmap {
 
         double V_f = countVf / R.length;
 
-        if (countVb == -1) {
-            countVb = 0;
-            for (int bit : B) {
-                if (bit == 0) {
-                    countVb++;
-                }
-            }
+        // We don't want keep calculating V_b as it will be always same
+        if (V_b == -1) {
+            double countVb = 0;
+            for (int bit : B) if (bit == 0) countVb++;
+            V_b = countVb / B.length;
         }
 
-        double V_b = countVb / B.length;
         return (int) (R.length * (Math.log(V_b) - Math.log(V_f)));
     }
 

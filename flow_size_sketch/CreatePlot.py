@@ -9,7 +9,7 @@ if __name__ == '__main__':
             actual.append(int(splitted[0]))
             estimated.append(int(splitted[1]))
 
-    plt.plot(actual, estimated, 'o')
+    plt.plot(actual, estimated, 'x')
     plt.ylabel("Estimated")
     plt.xlabel("Actual")
     plt.title("Estimated vs Actual")
